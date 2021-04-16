@@ -1,7 +1,7 @@
 import "./styles.css";
 import React, { useEffect, useState } from "react";
 import { Form, Button, Input } from "antd";
-import ReactMapGL, { Marker, Popup, FullscreenControl } from "react-map-gl";
+import ReactMapGL, { Marker } from "react-map-gl";
 
 export default function App() {
   let [geo, setGeo] = useState({});
