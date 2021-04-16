@@ -9,10 +9,10 @@ export default function App() {
 
   const [viewport, setViewport] = useState({
     width: "100%",
-    height: "40vw",
+    height: "60vw",
     latitude: -2.971061,
     longitude: 119.6282669,
-    zoom: 17
+    zoom: 18
   });
 
   useEffect(() => {
