@@ -4,6 +4,7 @@ import { Form, Button, Input } from "antd";
 
 export default function App() {
   let [geo, setGeo] = useState({});
+  let [live, setLive] = useState(false);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -16,13 +17,26 @@ export default function App() {
   }, []);
 
   const onFinish = (values) => {
+    if (live) {
+      setLive(false);
+    } else {
+      setLive(true);
+    }
     console.log(values);
+  };
+
+  const renderLive = () => {
+    if (live) {
+      return <h1 style={{ color: "green" }}>Live</h1>;
+    } else {
+      return <h1 style={{ color: "red" }}>Not Live</h1>;
+    }
   };
 
   return (
     <div className="App">
       <h1>GPS Data Xuro Tech</h1>
-      <h1 style={{ color: "red" }}>Not Live</h1>
+      {renderLive()}
       <h2>Latitude: {geo.latitude}</h2>
       <h2>Longitude: {geo.longitude}</h2>
       {/* https://www.google.com/maps/search/?api=1&query=36.26577,-92.54324 */}
