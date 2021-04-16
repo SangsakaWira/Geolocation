@@ -71,7 +71,7 @@ export default function App() {
         { enableHighAccuracy: true, timeout: 1000, maximumAge: 1000 }
       );
     }, 2000);
-  }, []);
+  }, [live]);
 
   const onFinish = (values) => {
     if (live) {
