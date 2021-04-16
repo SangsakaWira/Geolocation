@@ -1,10 +1,19 @@
 import "./styles.css";
 import React, { useEffect, useState } from "react";
 import { Form, Button, Input } from "antd";
+import ReactMapGL, { Marker, Popup, FullscreenControl } from "react-map-gl";
 
 export default function App() {
   let [geo, setGeo] = useState({});
   let [live, setLive] = useState(false);
+
+  const [viewport, setViewport] = useState({
+    width: "100%",
+    height: "40vw",
+    latitude: -2.971061,
+    longitude: 119.6282669,
+    zoom: 17
+  });
 
   useEffect(() => {
     setInterval(() => {
@@ -13,12 +22,17 @@ export default function App() {
           if (position) {
             setGeo(position.coords);
             console.log(position.coords);
+            setViewport({
+              ...viewport,
+              latitude: parseFloat(position.coords.latitude),
+              longitude: parseFloat(position.coords.longitude)
+            });
           }
         },
         (error) => console.log(error),
         { enableHighAccuracy: true, timeout: 1000, maximumAge: 1000 }
       );
-    }, 1000);
+    }, 2000);
   }, []);
 
   const onFinish = (values) => {
@@ -42,6 +56,23 @@ export default function App() {
     <div className="App">
       <h1>GPS Data Xuro Tech</h1>
       {renderLive()}
+      <ReactMapGL
+        mapboxApiAccessToken={
+          "pk.eyJ1Ijoic2FuZ3Nha2F3aXJhIiwiYSI6ImNqdXBhajZmeTBudXg0NG50YjdhcDF2amUifQ.NmC56k1T54xEKGmlrFOxRA"
+        }
+        {...viewport}
+        width={"100%"}
+        onViewportChange={(nextViewport) => setViewport(nextViewport)}
+      >
+        <Marker
+          latitude={viewport.latitude}
+          longitude={viewport.longitude}
+          offsetLeft={-20}
+          offsetTop={-10}
+        >
+          <div style={{ color: "red" }}>You Are Here!</div>
+        </Marker>
+      </ReactMapGL>
       <h2>Latitude: {geo.latitude}</h2>
       <h2>Longitude: {geo.longitude}</h2>
       {/* https://www.google.com/maps/search/?api=1&query=36.26577,-92.54324 */}
