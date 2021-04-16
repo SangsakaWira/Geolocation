@@ -1,11 +1,17 @@
 import "./styles.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Option, Select } from "react";
 import { Form, Button, Input } from "antd";
+import axios from "axios";
 import ReactMapGL, { Marker } from "react-map-gl";
 
 export default function App() {
-  let [geo, setGeo] = useState({});
-  let [live, setLive] = useState(false);
+  const [geo, setGeo] = useState({});
+  const [live, setLive] = useState(false);
+  const [users,setUsers] = useState([])
+  const [liveUser,setLiveUser] = useState({
+    user_id:"606198867bc961257b80a35e"
+  })
+  // const {Option, OptGroup} = Select;
 
   const [viewport, setViewport] = useState({
     width: "100%",
@@ -14,6 +20,21 @@ export default function App() {
     longitude: 119.6282669,
     zoom: 18
   });
+
+  useEffect(()=>{
+    axios.get("https://pimpmyjuul.com/user", {
+			headers: {
+				'content-type': 'multipart/form-data',
+				"Access-Control-Allow-Origin": "*",
+        "x-access-token":"secretkeyjwt"
+			}
+		}).then(doc => {
+			console.log(doc.data.doc)
+      setUsers(doc.data.doc)
+		}).catch(err=>{
+			console.log(err)
+		})
+  },[])
 
   useEffect(() => {
     setInterval(() => {
@@ -27,6 +48,21 @@ export default function App() {
               latitude: parseFloat(position.coords.latitude),
               longitude: parseFloat(position.coords.longitude)
             });
+            axios.post("https://pimpmyjuul.com/user/set-location",{
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              id:"606198867bc961257b80a35e"
+            },{
+              headers: {
+                'content-type': 'application/json',
+                "Access-Control-Allow-Origin": "*",
+                "x-access-token":"secretkeyjwt"
+              }
+            }).then(doc=>{
+                console.log(doc)
+            }).catch(err=>{
+              console.log(err)
+            })
           }
         },
         (error) => console.log(error),
@@ -41,12 +77,16 @@ export default function App() {
     } else {
       setLive(true);
     }
-    console.log(values);
+    console.log(values.user_id);
+    setLiveUser({
+      ...liveUser,
+      user_id:values.user_id
+    })
   };
 
   const renderLive = () => {
     if (live) {
-      return <h1 style={{ color: "green" }}>Live</h1>;
+      return <h1 style={{ color: "green" }}>{liveUser.user_id} is Live</h1>;
     } else {
       return <h1 style={{ color: "red" }}>Not Live</h1>;
     }
@@ -76,9 +116,15 @@ export default function App() {
       <h2>Latitude: {geo.latitude}</h2>
       <h2>Longitude: {geo.longitude}</h2>
       {/* https://www.google.com/maps/search/?api=1&query=36.26577,-92.54324 */}
-      <Form onFinish={onFinish}>
-        <Form.Item name="unique_id" placeholder="Unique Id">
-          <Input></Input>
+      <Form onFinish={onFinish} layout="vertical">
+        <Form.Item name="user_id" placeholder="User Id">
+          <select defaultValue="">
+          {users.map(doc=>{
+            return(
+              <option value={doc._id} >{doc.username} - {doc._id}</option>
+            )
+          })}
+          </select>
         </Form.Item>
         <br />
         <Button type="primary" htmlType="submit">
