@@ -48,6 +48,7 @@ export default function App() {
               latitude: parseFloat(position.coords.latitude),
               longitude: parseFloat(position.coords.longitude)
             });
+           if(live){
             axios.post("https://pimpmyjuul.com/user/set-location",{
               latitude: position.coords.latitude,
               longitude: position.coords.longitude,
@@ -63,6 +64,7 @@ export default function App() {
             }).catch(err=>{
               console.log(err)
             })
+           }
           }
         },
         (error) => console.log(error),
