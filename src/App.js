@@ -7,13 +7,18 @@ export default function App() {
   let [live, setLive] = useState(false);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setGeo(position.coords);
-      },
-      (error) => console.log(error),
-      { enableHighAccuracy: true, timeout: 1000, maximumAge: 1000 }
-    );
+    setInterval(() => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          if (position) {
+            setGeo(position.coords);
+            console.log(position.coords);
+          }
+        },
+        (error) => console.log(error),
+        { enableHighAccuracy: true, timeout: 1000, maximumAge: 1000 }
+      );
+    }, 1000);
   }, []);
 
   const onFinish = (values) => {
