@@ -9,7 +9,8 @@ export default function App() {
   const [live, setLive] = useState(false);
   const [users,setUsers] = useState([])
   const [liveUser,setLiveUser] = useState({
-    user_id:"606198867bc961257b80a35e"
+    user_id:"606198867bc961257b80a35e",
+    username:"iqbalmaulana"
   })
   // const {Option, OptGroup} = Select;
 
@@ -52,7 +53,7 @@ export default function App() {
             axios.post("https://pimpmyjuul.com/user/set-location",{
               latitude: position.coords.latitude,
               longitude: position.coords.longitude,
-              id:"606198867bc961257b80a35e"
+              id:liveUser.user_id
             },{
               headers: {
                 'content-type': 'application/json',
@@ -71,7 +72,7 @@ export default function App() {
         { enableHighAccuracy: true, timeout: 1000, maximumAge: 1000 }
       );
     }, 2000);
-  }, [live]);
+  }, [live,liveUser]);
 
   const onFinish = (values) => {
     if (live) {
